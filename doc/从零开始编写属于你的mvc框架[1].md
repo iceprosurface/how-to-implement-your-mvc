@@ -16,7 +16,7 @@
 
 在原文中，[^1]提到了对多叉树的遍历基本实现如下
 
-```
+```javascript
 Tree.prototype.traverseDF = function(callback) {
  
     // this is a recurse and immediately-invoking function 
@@ -55,7 +55,7 @@ Tree.prototype.traverseBF = function(callback) {
 
 本着有轮子坚决不自己写的觉悟，我直接抄袭了这段，魔改了一下后完成了对dom的实现
 
-```
+```javascript
 class element {
   constructor(tag, props, parent, scope) {
     this.tag = tag
@@ -139,7 +139,7 @@ ok很不错基本满意，但是显然花括号和属性绑定并没有完整的
 
 首先假定我们的scope结构是这样的
 
-```
+```javascript
 var scope = {
     $data: {
         'item':{
@@ -163,7 +163,7 @@ var scope = {
 
 我们假定我们的模板字符串长这样
 
-```
+```html
 <div class="contacts-wrap flex">
     <a :href='contact.url' class="flex">
       <div class="contacts-number"></div>
@@ -185,7 +185,7 @@ var scope = {
 
 > 显然的我们需要取出对象里面的方法，具体我不知道有什么更好的方法，这里我就暂且先用这个替代吧！
 
-```
+```javascript
 // 用于递归取出合适的object对象
 function canGetO(o,arr){
     if(arr.length > 0){
@@ -215,7 +215,7 @@ function buildSyntac(obj,str){
 
 接着小小魔改一下text阶段的内容即可，这样内容就生效了
 
-```
+```javascript
 if(this.tag == "text"){
       // text 元素
       var temReg = /{{.*?}}/g
@@ -233,7 +233,7 @@ if(this.tag == "text"){
 
 ### 3.1.2 属性和事件监听的渲染
 
-```
+```javascript
 this.props.forEach((prop)=>{
       var key = prop.key
       // 去掉头就是第一位啦！！
@@ -282,7 +282,7 @@ dom 结构
 
 当然咯这里我们可以使用最简单的一个实现，那就是使用data的get方法和set方法来操作最简单的那就是直接使用手动设置比如这样
 
-```
+```javascript
 /**
  * 按照scope生成监控对象
  * @param {Object} scope 
