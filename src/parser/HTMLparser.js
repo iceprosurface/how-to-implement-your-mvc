@@ -1,9 +1,9 @@
 /**
  * HTML 编译模块
- * @module HTMLparser
+ * @module Parser
  */
 
-import Element from '../core/compnoment/vm-dom'
+import Element from './../core/compnoment/vdom/vm-dom'
 
 /**
  * 检测输入的元素状态
@@ -29,7 +29,8 @@ function check(el, i) {
 
 /**
  * html编译器
- * @param {string} html html模板字符串
+ * @param {String} html html模板字符串
+ * @return {Array} 解析栈，每一个元素都是独立标签
  */
 export function HTMLParser(html) {
     var stack = []
@@ -142,6 +143,7 @@ function TagParser(el) {
     }
     return { name, props }
 }
+
 /**
 * 判断是否是闭合标签
 */
@@ -199,7 +201,7 @@ function ElementParser(el, parent, stack, scope) {
                     ele.addChild(child)
                     break
                 case 3:
-                    ele.addChild(new Element('text', tag, parent, scope))
+                    ele.addChild(new Element('text', tag, ele, scope))
                     break
             }
         }

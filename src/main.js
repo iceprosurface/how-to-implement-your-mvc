@@ -11,7 +11,13 @@ var templete = `
     </a>
   <div class="panel-title">实时动态</div>
   <div class="statistics-wrap flex">
-    <div class="statistics-detailed">{{item.title}}</div>
+    <div class="statistics-detailed">qqq</div>
+    <div class="statistics-detailed">
+        <div class="statistics-detailed">xxx</div>
+        {{item.title}}
+        <div class="statistics-detailed">bbb</div>
+    </div>
+    <div class="statistics-detailed">ddd</div>
     <div class="statistics-number" @click="testClick">{{item.count}}</div>
     <a :href="item.url">立即查看</a>
   </div>
@@ -40,7 +46,10 @@ var scope = {
 }
 
 var vir = HTMLCompnonentParser(buildScope(scope), HTMLParser(templete), null)
-console.log(buildScope(scope), vir)
 document.getElementById('app').innerHTML = ''
-document.getElementById('app').appendChild(vir.buildDom())
+console.log(vir.$el)
+vir.create()
+vir.mount()
+console.log(buildScope(scope), vir)
+document.getElementById('app').appendChild(vir.$el)
 setRootVir(vir)

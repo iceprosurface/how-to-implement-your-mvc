@@ -2,7 +2,7 @@
 import {buildSyntac} from '../../parser/syntax'
 
 export class Porps {
-    constructor(props, scope) {
+    constructor(props, scope, element) {
         var attributes = []
         var propAttributes = []
         var events = []
@@ -17,6 +17,7 @@ export class Porps {
             // 属性绑定
             if (key.startsWith(':')) {
                 var result = buildSyntac.bind(this, $data, value)
+                scope.$data.on(value.split(/[\.\[\]]\.?/).join('.'), element)
                 if (!result) {
                     console.error('[method error] can`t find ', keyStr)
                     return

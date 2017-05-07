@@ -29,7 +29,7 @@ module.exports = {
       }
     ]
   },
-  devtool: '#eval-source-map',
+  devtool: '#cheap-module-source-map',
   eslint: {
     formatter: require('eslint-friendly-formatter')
   },

@@ -41,6 +41,7 @@
 ```
 
 ### 2.3 eslint
+
 ```javascript
 {
     "extends": "standard",
@@ -59,6 +60,7 @@
     }
 }
 ```
+
 首先我们从eslint standard继承一份配置过来然后稍稍改一下
 
 1. promise：我们还是需要检测promise的，这里上个plugin
@@ -91,6 +93,7 @@ server.listen(8099);
 ```
 
 最后记得在package.json中加上dev即可
+
 ```json
   "scripts": {
     "dev": "node config/dev-server.js"
@@ -102,8 +105,7 @@ server.listen(8099);
 
 在之前相比都见过我使用的一些注释比如
 
-```
-
+```javascript
 /**
 * 检测输入的元素状态
 * @param {string} el templete字符串
@@ -139,6 +141,7 @@ compiler类用来处理所有的模板等等
 大致暂定为这样
 
 随后是项目的结构
+
 ```
 |-test 项目测试用例
   |-测试对象名称
@@ -164,222 +167,97 @@ compiler类用来处理所有的模板等等
 
 不过现在为了方便起见，我们先把整个main.js全部拎出来。
 
-### 4.1.1 parser模块
+内容太多了，这里就先不介绍了，具体看github上的更新历史。
 
-这个模块首先有个index.js,这个模块应该是没有任何类的，这个方法主要的目的是聚合方法，直接export方法即可,随后我们需要建立一个HTMLparser.js这个模块主要用来处理HTMLparser，当然咯这模块类的只是函数处理，不需要太多的功能
+### 4.2 模块的补充
 
-大致整合一下可以得出这个结果
+在这里我们不难发现，在对element操作的时候带来了困难，原因很简单，因为在系统中只有element的生成，却没有其他的生成过程，这样是不合理的，所以呢，现在我们需要完善整个生命周期，首先我们需要对具体的element作出储存，同时将内容与对应的data scope绑定起来。
+
+首先常见的元素生成过程大致如下：
+
+1. create
+2. mounted
+3. ready
+4. destory
+
+上述4个就是element的创建过程了，对此我们要讲原来耦合的元素创建分离开来。
+
+同时在做这一步的同时，我们可以顺便将不同类型的 node 创建过程分离，对于不同的内容我们可以选择产生几种新的方法代理执行，而不是直接写在内部。
+
+此外我们还可以将dom与vm绑定。
+
+最后主要的几个方法大致是这样的：
+
+> createElement这是用来创建实际dom 的之后将会把添加一个创建compnoent的
 
 ```
-import Element from '../core/compnoment/vm-dom'
-
 /**
-* 检测输入的元素状态
-* @param {string} el templete字符串
-* @param {int} i index
-* @return {int} 0代表休止标签</，1代表起始标签<，2代表标签结束符,3代表其他字符
-*/
-function check(el, i) {
-    var curr = el[i]
-    if (curr === '<') {
-        if (i + 1 <= el.length && i > 0) {
-            let next = el[i + 1]
-            if (next === '\\') {
-                return 0
-            }
-        }
-        return 1
-    } else if (curr === '>') {
-        return 2
-    }
-    return 3
-}
-
-/**
- * html编译器
- * @param {string} html html模板字符串
+ * 创建一个 Imit dom对象
+ * @param {String} tag 标签名称
+ * @param {Array} components 引入的组件列表
+ * @param {Object} option 额外内容，包括作用域，属性/属性列表
+ * @returns {domElement} 返回的是一个已经绑定完所有内容的dom对象 
  */
-export function HTMLParser(html) {
-    var stack = []
-    var start = 0
-    //Single quotation marks "
-    var sq = 0
-    //Double quotation marks '
-    var dq = 0
-    //Brace left {
-    var bl = 0
-    //Brace right }
-    var br = 0
-    //IsDoing Task？
-    var inTask = false
-    /**
-     * 初始化函数
-     */
-    var init = function () {
-        inTask = false
-        dq = sq = bl = br = 0
-    }
-    for (let i = 0; i < html.length; i++) {
-        switch (check(html, i)) {
-            case 0:
-            case 1:
-                // 开头是<
-                if (inTask) {
-                    console.error('[syntax error]on:', html.substr(0, i), ',sq:', sq, ',dq:', dq, ',bl:', bl, ',br:', br)
-                    return stack
-                } else {
-                    stack.push(html.substring(start, i))
-                    start = i
-                    inTask = true
-                }
-                break
-            case 2:
-                //结束符号>
-                if (!(sq % 2) && !(dq % 2) && br === bl) {
-                    stack.push(html.substring(start, i + 1))
-                    start = i + 1
-                    init()
-                }
-                break
-            case 3:
-                // 其他符号累计计数器
-                switch (html[i]) {
-                    case '\'':
-                        sq += 1
-                        break
-                    case '"':
-                        dq += 1
-                        break
-                    case '{':
-                        bl += 1
-                        break
-                    case '}':
-                        br += 1
-                        break
-                }
-        }
-    }
-    return stack
-}
+export function createImitElement(tag, components, option) { ... }
 
-/**
-* 检测输入的元素状态
-* @param {string} node templete字符串
-* @return {int} 0代表结束标签，1代表起始标签，3代表其他字符
-*/
-function checkNode(node) {
-    if (node.indexOf('</') === 0) {
-        return 0
-    } else if (node.indexOf('<') === 0) {
-        return 1
-    } else {
-        return 3
-    }
-}
-
-/**
-* 将tag解析为合适的数据格式
-* @param {string} el templete字符串
-* @return {string} name tag name
-* @return {string} props 属性字符串，这在将来在做处理
-*/
-function TagParser(el) {
-    // 第一个开始到第一个空格显然是 tagname
-    var name = el.substring(1, el.indexOf(' '))
-    // 第一个空格开始到最后一个>位置显然是全部的props
-    var props = []
-    var propstr = el.substring(el.indexOf(' ') + 1, el.lastIndexOf('>'))
-    // 针对所有成对出现元素
-    var regProp = /([:@]?\w[\w-]*="[^"]*?")|(([:@]?\w[\w-]*='[^']*?'))/g
-    // 针对所有单项元素
-    var regSingle = /(\s\w+(?=\s+|$))/g
-    var matchs = propstr.match(regProp)
-    // 这里是可以直接在用一次正则获取的，但算了算还要拼装还是直接用map吧
-    if (matchs) {
-        props = props.concat(matchs.map((r) => {
-            var result = [r.substring(0, r.indexOf('=')), r.substring(r.indexOf('=') + 1, r.length)]
-            result[1] = result[1].substring(1, result[1].length - 1)
-            return { key: result[0], value: result[1] }
-        }))
-    }
-    matchs = propstr.match(regSingle)
-    if (matchs) {
-        props = props.concat(matchs.map((r) => {
-            return { key: r.trim(), value: true }
-        }))
-    }
-    return { name, props }
-}
-/**
-* 判断是否是闭合标签
-*/
-function CloseTagParser(el) {
-    return el.substring(el.indexOf('/') + 1, el.lastIndexOf('>'))
-}
-
-export function HTMLCompnonentParser(scope, stack, parent) {
-    var root = new Element('div', [], parent, scope)
-    while (stack.length > 0) {
-        var tag = stack.shift().trim()
-        if (tag) {
-            switch (checkNode(tag)) {
-                case 0:
-                    // root ele 必然没有close tag 如果出现说明出错
-                    var closeTag = CloseTagParser(tag)
-                    console.error('[syntax error]unexpect close tag:', closeTag, '.')
-                    break
-                case 1:
-                    var child = ElementParser(tag, root, stack, scope)
-                    if (!child) return false
-                    root.addChild(child)
-                    break
-                case 3:
-                    root.addChild(new Element('text', tag, parent))
-                    break
-            }
-        }
-    }
-    return root
-}
-
-function ElementParser(el, parent, stack, scope) {
-    var { name, props } = TagParser(el)
-    var ele = new Element(name, props, parent, scope)
-    while (stack.length > 0) {
-        var tag = stack.shift().trim()
-        if ([].indexOf(name) !== -1) {
-
-        } else if (tag) {
-            switch (checkNode(tag)) {
-                case 0:
-                    var closeTag = CloseTagParser(tag)
-                    if (closeTag !== name) {
-                        console.error('[syntax error]expect tag:', name, ',but found:', closeTag, '.in \n', el)
-                        return false
-                    } else {
-                        return ele
-                    }
-                case 1:
-                    var child = ElementParser(tag, ele, stack, scope)
-                    if (!child) {
-                        return false
-                    }
-                    ele.addChild(child)
-                    break
-                case 3:
-                    ele.addChild(new Element('text', tag, parent, scope))
-                    break
-            }
-        }
-    }
-    console.error('[syntax error]expect tag:', name, ',but not found. in \n', el)
-    return false
-}
 
 ```
 
+> v-dom的相关方法
+
+```
+    /**
+     * 挂载元素
+     */
+    mount () {
+        if (this.parent && this.parent.$el) {
+            this.parent.$el.appendChild(this.$el)
+        }
+    }
+    /**
+     * 更新组件
+     */
+    update (scope) {
+        // TODO：判断是否是组件！
+        // 替换组件
+        var newEl = this.render()
+        this.parent.$el.replaceChild(newEl, this.$el)
+        this.$el = newEl
+    }
+    render () {
+        var option = {
+            props: this.props,
+            propsData: this.propsData,
+            scope: this.scope,
+            _this: this
+        }
+        return createImitElement(this.tag, this.scope.components, option)
+    }
+    /**
+     * 销毁组件或元素
+     */
+    destroy () {
+        this.children.forEach(function (element) {
+            element.destroy()
+        })
+        // 从scope中清除本对象的挂载
+        this.scope.off(this)
+        // 其他清理工作
+        this.$el.parentNode.removeChild(this.$el)
+    }
+```
 
 
+### 4.3 现有组件的问题
+随后我们将过程拆分开来，具体的更新可以查看github的内容，上面有详细的记录。现在我们的项目已经看上去比之前健壮了一点，但是显然的问题还是有个，那就是组件的嵌套，子组件的使用，现在只有普通的node和textnode却没有关于子组件的创建，同样的，这里还有一个更加显著的问题，那就是虽然使用了一种类似于虚拟dom的手段，但是实际上，这一实现的本质并不是虚拟dom，我们需要的不是类似于观察者模式的触发。（因为这会导致组件呗重复的操作）事实上我们需要的是一个延时性质的更新组件。
+
+从之前的内容我们不难发现不论怎么操作，所有的操作都会汇总到某个medthod方法完成，而不是某个属性的完成，诚然，观察者模式的记录我们任然可以使用，但不应该直接去更新dom而是触发一个延时的更新函数，并通过这个延时更新函数，diff差异，并将差异完整的更新上去。
+
+而这里的差异，显然的需要一个散列方法来处理。
+
+### 结语
+
+由于最近时间实在不够用，更新的时间和周期也是不确定的，这也是没有办法，最后期待下一篇，下次的内容中将实现对多个组件的绑定（说的本来这次要实现的呢！），那么下篇博客再见！
 
 
 [^1]: webpack,WEBPACK DEV SERVER.[http://webpack.github.io/docs/webpack-dev-server.html](http://webpack.github.io/docs/webpack-dev-server.html),2017.
