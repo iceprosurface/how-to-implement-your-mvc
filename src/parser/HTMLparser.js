@@ -118,7 +118,9 @@ function checkNode(node) {
 */
 function TagParser(el) {
     // 第一个开始到第一个空格显然是 tagname
-    var name = el.substring(1, el.indexOf(' '))
+    var endIndex = el.indexOf(' ')
+    // 如果不存在空格则说明全部都是字母或者需要的标签
+    var name = el.substring(1, endIndex === -1 ? el.length - 1 : endIndex)
     // 第一个空格开始到最后一个>位置显然是全部的props
     var props = []
     var propstr = el.substring(el.indexOf(' ') + 1, el.lastIndexOf('>'))

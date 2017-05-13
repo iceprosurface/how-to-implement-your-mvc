@@ -59,9 +59,11 @@ class Observer {
 function buildOb(root, data, key, value, parentKey) {
     // 首个元素之间使用key
     var event = parentKey ? parentKey + '.' + key : key
-    // 暂不考虑数组方法
     if (value && typeof value !== 'string' && typeof value !== 'boolean' && typeof value !== 'number') {
         var buildTmpValue = {}
+        if (Object.prototype.toString.call(value).toLowerCase() === '[object array]') {
+            buildTmpValue = []
+        }
         for (var i in value) {
             buildOb(root, buildTmpValue, i, value[i], key)
         }

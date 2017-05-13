@@ -2,7 +2,7 @@
  * vdom
  * @module vdom
  */
-import { buildSyntac } from '../../../parser/syntax'
+import { buildSyntax } from '../../../parser/syntax'
 
 /**
  * 创建一个 Imit dom对象
@@ -37,7 +37,7 @@ function TextElement(props, scope) {
     if (temMatchResult) {
         temMatchResult.forEach((val) => {
             // 首先要对遍历出的目标作出修正，首先是取出括号，随后去掉前后空格
-            var value = buildSyntac(scope.$data, val.substring(2, val.length - 2).trim())
+            var value = buildSyntax(scope.$data, val.substring(2, val.length - 2).trim())()
             temStr = temStr.replace(val, value)
         })
     }

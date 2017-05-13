@@ -18,8 +18,11 @@ var templete = `
         <div class="statistics-detailed">bbb</div>
     </div>
     <div class="statistics-detailed">ddd</div>
-    <div class="statistics-number" @click="testClick">{{item.count}}</div>
+    <div class="statistics-number" @click="testClick">{{item.count+1}}</div>
     <a :href="item.url">立即查看</a>
+    <p>
+        {{testArray.join(',')}}
+    </p>
   </div>
 </div>
 `
@@ -34,7 +37,8 @@ var scope = {
         'contact': {
             'url': 'www.iceprosurface.com',
             'num': 2
-        }
+        },
+        'testArray': [0, 1, 2, 3, 4, 5]
     },
     methods: {
         testClick() {

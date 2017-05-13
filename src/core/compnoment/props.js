@@ -1,5 +1,5 @@
 
-import {buildSyntac} from '../../parser/syntax'
+import {buildSyntax} from '../../parser/syntax'
 
 export class Porps {
     constructor(props, scope, element) {
@@ -16,12 +16,13 @@ export class Porps {
             var value = prop.value
             // 属性绑定
             if (key.startsWith(':')) {
-                var result = buildSyntac.bind(this, $data, value)
+                var result = buildSyntax($data, value)
                 scope.$data.on(value.split(/[\.\[\]]\.?/).join('.'), element)
                 if (!result) {
                     console.error('[method error] can`t find ', keyStr)
                     return
                 }
+                // 以后value将会是一个函数，要使用scope代入
                 propAttributes.push({key: keyStr, value: result})
             } else if (key.startsWith('@')) {
                 // 方法绑定      
