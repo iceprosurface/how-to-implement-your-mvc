@@ -8,7 +8,7 @@ export class Porps {
         var events = []
         var preMethods = []
         var methods = scope.methods
-        var $data = scope.$data
+        // var $data = scope.$data
         props.forEach((prop) => {
             var key = prop.key
             // 去掉头就是第一位啦！！
@@ -16,7 +16,7 @@ export class Porps {
             var value = prop.value
             // 属性绑定
             if (key.startsWith(':')) {
-                var result = buildSyntax($data, value)
+                var result = buildSyntax(scope, value)
                 scope.$data.on(value.split(/[\.\[\]]\.?/).join('.'), element)
                 if (!result) {
                     console.error('[method error] can`t find ', keyStr)
@@ -30,7 +30,7 @@ export class Porps {
                     console.error('[method error] can`t find ', value)
                     return
                 }
-                events.push({key: keyStr, value: methods[value].bind($data)})
+                events.push({key: keyStr, value: methods[value].bind(scope)})
             } else if (key.startsWith('i-')) {
                 // TODO: 未来需要添加一些诸如 i-for,i-if等等的功能就在这里实现啦
                 

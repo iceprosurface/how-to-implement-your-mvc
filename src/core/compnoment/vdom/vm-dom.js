@@ -5,7 +5,7 @@
 
 import { Porps } from '../props'
 import { createImitElement } from './createElement'
-
+import { createComponent } from './createComponent'
 /**
  * @class Element
  * @prop {String} tag 标签名
@@ -18,6 +18,10 @@ import { createImitElement } from './createElement'
 class Element {
     constructor(tag, props, parent, scope) {
         this.props = props
+        if (Object.keys(scope.components).indexOf(tag) !== -1) {
+            // 当不等于-1的情况下，说明是一个子组件，调用createComponent创建dom
+            return createComponent(scope.components[tag], parent)
+        }
         if (tag === 'text') {
             // text 元素
             this.propsData = new Porps([], scope, this)
@@ -44,7 +48,9 @@ class Element {
      * @param {Element} ele 子元素
      */
     addChild(ele) {
-        this.children.push(ele)
+        if (!this.isComponent) {
+            this.children.push(ele)
+        }
     }
     //深度优先算法
     //参考至 http://code.tutsplus.com/articles/data-structures-with-javascript-tree--cms-23393
@@ -80,9 +86,9 @@ class Element {
         this.mount()
         
         this.children.forEach(function (_) {
-            // 创建子组件
+            // 创建子元素
             _.create()
-            // 挂载子组件
+            // 挂载子子元素
             // _.mount()
         })
     }
@@ -111,7 +117,7 @@ class Element {
             scope: this.scope,
             _this: this
         }
-        return createImitElement(this.tag, this.scope.components, option)
+        return createImitElement(this.tag, option)
     }
     /**
      * 销毁组件或元素
@@ -121,7 +127,7 @@ class Element {
             element.destroy()
         })
         // 从scope中清除本对象的挂载
-        this.scope.off(this)
+        // this.scope.off(this)
         // 其他清理工作
         this.$el.parentNode.removeChild(this.$el)
     }

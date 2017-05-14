@@ -1,15 +1,47 @@
 // import { update } from '../compnoment/update'
-
+const invalidData = [ '$data', 'methods', 'components', '_list' ]
 export function buildScope(scope) {
+    if (!scope) {
+        return {
+            $data: {},
+            methods: {},
+            components: []
+        }
+    }
     var $data = new Observer()
+    var methods = scope.methods ? scope.methods : {}
+    var components = scope.components ? scope.components : []
     for (var i in scope.$data) {
         buildOb($data, $data, i, scope.$data[i])
     }
-    return {
+    // scope 对象
+    var scopes = {
         $data,
-        methods: scope.methods,
-        components: []
+        methods,
+        components 
     }
+    // 映射所有可见内容到scope
+    for (var data in $data) {
+        if (invalidData.indexOf(data) === -1) {
+            Object.defineProperty(scopes, data, {
+                enumerable: true,
+                configurable: true,
+                get: function () { return $data[data] },
+                set: function (newVal) { $data[data] = newVal } 
+            })
+        }
+    }
+    for (var method in methods) {
+        if (invalidData.indexOf(method) === -1) {
+            Object.defineProperty(scopes, method, {
+                enumerable: true,
+                configurable: true,
+                get: function () { return methods[method] },
+                set: function (newVal) { methods[method] = newVal } 
+            })
+        }
+    }
+    return scopes
 }
 
 class Observer {
