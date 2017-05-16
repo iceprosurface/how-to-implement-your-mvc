@@ -1,0 +1,17 @@
+{
+    "extends": "standard",
+    "plugins": [
+        "standard",
+        "promise"
+    ],
+    "rules": {
+        "indent": ["error",4, { "SwitchCase": 1 }],
+        "spaced-comment": "off",
+        "no-trailing-spaces": "off",
+        "space-before-function-paren": "off",
+        "new-cap": "warn",
+        "comma-dangle": "off",
+        "no-undef": "off",
+        "no-new-func": "off"
+    }
+}

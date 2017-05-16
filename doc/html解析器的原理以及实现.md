@@ -110,7 +110,7 @@
 
 首先我们需要一个检测输入元素的函数用来检测输入元素字符类型（只是为了更直观显示）
 
-```
+```javascript
 /**
  * 检测输入的元素状态
  * @param {string} el templete字符串
@@ -134,7 +134,8 @@ function check(el,i){
 ```
 
 随后我们需要制作一个html解析器，将html预处理成数组
-```
+
+```javascript
 /**
  * html预处理
  * @param {string} html templete字符串
@@ -205,7 +206,7 @@ function HTMLParser(html){
 
 让我们看看运行结果如何？
 
-```
+```javascript
 var templete = `
 <div class="contacts-wrap flex">
 <div class="contacts-panel" v-for="x>=3">
@@ -234,7 +235,8 @@ console.log(HTMLParser(templete))
 ```
 
 > 结果：
->```
+>
+```javascript
 ["
 ", "<div class=\"contacts-wrap flex\">", "
 ", "<div class=\"contacts-panel\" v-for=\"x>=3\">", "
@@ -257,13 +259,13 @@ console.log(HTMLParser(templete))
 ", "<a :href=\"item.url\">", "立即查看", "</a>", "
 ", "</div>", "
 ", "</div>"]
->```
+```
 
 ### 4.2 解析为dom树
 
 首先我们需要定义element类来放置各种dom
 
-```
+```javascript
 class element {
   constructor(tag,prop,parent,scope){
     this.tag = tag
@@ -282,7 +284,8 @@ class element {
 首先需要写个主要方法，用来解析根节点，随后使用一个递归方法依次解析dom元素，随后返回给根节点，虽然按照逻辑是先写根节点的，但是递归自下而上写要比自顶而下要容易不少
 
 >首先拟定基本结构
-```
+
+```javascript
 function ElementParser(el,parent,stack,scope){
   // 创建一个元素
   while(stack.length > 0){
@@ -313,7 +316,7 @@ function ElementParser(el,parent,stack,scope){
 
 先写好这两个方法
 
-```
+```javascript
 /**
 * 将tag解析为合适的数据格式
 * @param {string} el templete字符串
@@ -340,7 +343,7 @@ function CloseTagParser(el){
 
 > 最后我们吧elementparser这个方法写完
 
-```
+```javascript
 function ElementParser(el,parent,stack,scope){
   var {name,props} = TagParser(el)
   var ele = new element(name,props,parent);
@@ -377,7 +380,7 @@ function ElementParser(el,parent,stack,scope){
 
 > 照这个写个单层结构基本就是root节点了
 
-```
+```javascript
 function HTMLCompnonentParser(componentName,scope,stack,parent){
   var root = new element(componentName,[],parent,scope);
   while(stack.length > 0){
@@ -406,7 +409,7 @@ function HTMLCompnonentParser(componentName,scope,stack,parent){
 
 ### 4.3 解析属性数组
 
-```
+```javascript
 /**
 * 将tag解析为合适的数据格式
 * @param {string} el templete字符串
