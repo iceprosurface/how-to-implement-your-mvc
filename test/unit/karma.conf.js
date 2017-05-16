@@ -49,7 +49,7 @@ module.exports = function (config) {
         // 1. install corresponding karma launcher
         //    http://karma-runner.github.io/0.13/config/browsers.html
         // 2. add it to the `browsers` array below.
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
         frameworks: ['mocha'],//, 'sinon-chai'
         reporters: ['spec', 'coverage'],
         files: ['./index.js'],
@@ -67,11 +67,15 @@ module.exports = function (config) {
                 { type: 'text-summary' }
             ]
         },
+	phantomjsLauncher: {
+		// Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom) 
+		exitOnResourceError: true
+	},
         plugins: [
             'karma-mocha',
             'karma-coverage',
             'karma-spec-reporter',
-            'karma-chrome-launcher',
+            'karma-phantomjs-launcher',
             'karma-webpack',
             'karma-sourcemap-loader',
             'webpack'
