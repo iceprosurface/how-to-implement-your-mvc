@@ -1,7 +1,7 @@
 //一个常见的Webpack配置文件
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var JsDocPlugin = require('jsdoc-webpack-plugin');
+
 
 module.exports = {
   entry: {
@@ -42,9 +42,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: __dirname + "/../src/index.html"
     }),
-    new JsDocPlugin({
-        conf: __dirname + "/jsdoc.conf"
-    })
+
 
   ]
 }
