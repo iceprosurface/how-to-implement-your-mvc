@@ -1,5 +1,7 @@
 # 如何从零开始编写一个属于你的前端mvc框架
 
+![https://travis-ci.org/iceprosurface/how-to-implement-your-mvc.svg?branch=master](https://travis-ci.org/iceprosurface/how-to-implement-your-mvc.svg?branch=master)
+
 这是一个最近开始写作的项目，主要为了更好地了解前端框架是怎样实现的，前端框架如何运作，作为一个初学者，如何编写一个自己的mvc框架。
 
 框架的名字改名叫imitator（简称 Imit）
