@@ -4,7 +4,18 @@
 //   https://github.com/webpack/karma-webpack
 
 var path = require('path')
+var webpack = require('webpack')
+var projectRoot = path.resolve(__dirname, '../../')
+var utils = require('./utils')
+
 var baseConfig = {
+    resolve: {
+        alias: {
+            src: path.resolve(projectRoot, 'src'),
+            // core: path.resolve(projectRoot, '../src/core'),
+            // core: path.resolve(projectRoot, '../src/core'),
+        }
+    },
     module: {
         loaders: [
             {
@@ -25,9 +36,7 @@ var baseConfig = {
     plugins: [],
     devtool: '#inline-source-map'
 }
-var webpack = require('webpack')
-var projectRoot = path.resolve(__dirname, '../../')
-var utils = require('./utils')
+
 
 module.exports = function (config) {
     config.set({
