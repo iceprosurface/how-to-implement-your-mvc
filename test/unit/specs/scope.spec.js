@@ -1,6 +1,7 @@
 var assert = require('assert')
-describe('Array', () => {
-    it('array shou use', () => {
-        assert.equal(-1, [1, 2, 3].indexOf(5))
+import {buildScope} from './../../../src/core/scope'
+describe('scope', () => {
+    it('null of scope is null', () => {
+        assert.equal(undefined, buildScope(null).$data.x)
     })
 })
