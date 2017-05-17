@@ -4,44 +4,30 @@
 //   https://github.com/webpack/karma-webpack
 
 var path = require('path')
-var baseConfig = require('../../config/webpack.config.js')
-var merge = require('webpack-merge')
+var baseConfig = {
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel'
+            }
+        ],
+        rules: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/,
+                plugins: [['istanbul']]
+            }
+        ]
+    },
+    plugins: [],
+    devtool: '#inline-source-map'
+}
 var webpack = require('webpack')
 var projectRoot = path.resolve(__dirname, '../../')
 var utils = require('./utils')
-var webpackConfig = merge(baseConfig, {
-    // use inline sourcemap for karma-sourcemap-loader
-    module: {
-        loaders: utils.styleLoaders()
-    },
-    devtool: '#inline-source-map',
-    vue: {
-        loaders: {
-            js: 'isparta'
-        }
-    },
-    plugins: [
-    ]
-})
-
-// no need for app entry during tests
-delete webpackConfig.entry
-
-// make sure isparta loader is applied before eslint
-webpackConfig.module.preLoaders = webpackConfig.module.preLoaders || []
-webpackConfig.module.preLoaders.unshift({
-    test: /\.js$/,
-    loader: 'isparta',
-    include: path.resolve(projectRoot, 'src')
-})
-
-// only apply babel for test files when using isparta
-webpackConfig.module.loaders.some(function (loader, i) {
-    if (loader.loader === 'babel') {
-        loader.include = path.resolve(projectRoot, 'test/unit')
-        return true
-    }
-})
 
 module.exports = function (config) {
     config.set({
@@ -56,7 +42,7 @@ module.exports = function (config) {
         preprocessors: {
             './index.js': ['webpack', 'sourcemap']
         },
-        webpack: webpackConfig,
+        webpack: baseConfig,
         webpackMiddleware: {
             noInfo: true
         },
@@ -67,10 +53,10 @@ module.exports = function (config) {
                 { type: 'text-summary' }
             ]
         },
-	phantomjsLauncher: {
-		// Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom) 
-		exitOnResourceError: true
-	},
+        phantomjsLauncher: {
+            // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom) 
+            exitOnResourceError: true
+        },
         plugins: [
             'karma-mocha',
             'karma-coverage',
