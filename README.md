@@ -2,6 +2,8 @@
 
 [![Build Status](https://www.travis-ci.org/iceprosurface/how-to-implement-your-mvc.svg?branch=master)](https://www.travis-ci.org/iceprosurface/how-to-implement-your-mvc)
 
+[![codecov](https://codecov.io/gh/iceprosurface/how-to-implement-your-mvc/branch/master/graph/badge.svg)](https://codecov.io/gh/iceprosurface/how-to-implement-your-mvc)
+
 这是一个最近开始写作的项目，主要为了更好地了解前端框架是怎样实现的，前端框架如何运作，作为一个初学者，如何编写一个自己的mvc框架。
 
 框架的名字改名叫imitator（简称 Imit）
