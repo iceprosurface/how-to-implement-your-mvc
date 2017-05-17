@@ -18,7 +18,7 @@ var baseConfig = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/,
-                plugins: [['istanbul']]
+                plugins: ['istanbul']
             }
         ]
     },
