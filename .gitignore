@@ -26,3 +26,5 @@ build/
 doc/api
 
 test/unit/coverage/
+
+readme.md
