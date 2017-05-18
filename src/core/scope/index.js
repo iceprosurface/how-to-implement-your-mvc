@@ -40,8 +40,8 @@ export function buildScope(scope) {
             Object.defineProperty(scopes, method, {
                 enumerable: true,
                 configurable: true,
-                get: function () { return methods[method] },
-                set: function (newVal) { methods[method] = newVal } 
+                get: getFn,
+                set: setFn
             })
         }
     }
@@ -53,9 +53,7 @@ function GetFn ($data, data) {
 }
 
 function SetFn ($data, data) {
-    return function($data, data){
-        return function (newVal) { $data[data] = newVal } 
-    }
+    return function (newVal) { $data[data] = newVal } 
 }
 
 class Observer {
@@ -74,16 +72,15 @@ class Observer {
         var index = -1
         if (!this._list[name]) {
             return
-        } else {
-            index = this._list[name].indexOf(element)
         }
+        index = this._list[name].indexOf(element)
         if (index !== -1) {
             this._list[name].splice(index, 1)
         }
     }
     emit (name, callback) {
         if (!this._list[name]) {
-            return
+            return false
         }
         var noneList = []
         this._list[name].forEach(function(element, index) {
@@ -93,6 +90,7 @@ class Observer {
                 noneList.push(index)
             }
         }, this)
+        return true
     }
 }
 
@@ -120,6 +118,10 @@ function buildOb(root, data, key, value, parentKey) {
         configurable: true,
         get: function () { return value },
         set: function (newVal) {
+            if (newVal === value) {
+                // 当值相同的时候不做任何操作
+                return
+            }
             value = newVal
             root.emit(event, _ => _.update())
             // update()
