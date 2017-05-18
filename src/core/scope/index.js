@@ -23,16 +23,20 @@ export function buildScope(scope) {
     // 映射所有可见内容到scope
     for (var data in $data) {
         if (invalidData.indexOf(data) === -1) {
+            var getFn = GetFn($data, data)
+            var setFn = SetFn($data, data)
             Object.defineProperty(scopes, data, {
                 enumerable: true,
                 configurable: true,
-                get: function () { return $data[data] },
-                set: function (newVal) { $data[data] = newVal } 
+                get: getFn,
+                set: setFn
             })
         }
     }
     for (var method in methods) {
         if (invalidData.indexOf(method) === -1) {
+            var getFn = GetFn(methods, method)
+            var setFn = SetFn(methods, method)
             Object.defineProperty(scopes, method, {
                 enumerable: true,
                 configurable: true,
@@ -42,6 +46,16 @@ export function buildScope(scope) {
         }
     }
     return scopes
+}
+
+function GetFn ($data, data) {
+    return function () { return $data[data] }
+}
+
+function SetFn ($data, data) {
+    return function($data, data){
+        return function (newVal) { $data[data] = newVal } 
+    }
 }
 
 class Observer {
