@@ -11,12 +11,12 @@ import Element from './../core/compnoment/vdom/vm-dom'
  * @param {int} i index
  * @return {int} 0代表休止标签</，1代表起始标签<，2代表标签结束符,3代表其他字符
  */
-function check(el, i) {
+export function check(el, i) {
     var curr = el[i]
     if (curr === '<') {
-        if (i + 1 <= el.length && i > 0) {
+        if (i + 1 <= el.length && i + 1 > 0) {
             let next = el[i + 1]
-            if (next === '\\') {
+            if (next === '/') {
                 return 0
             }
         }
@@ -100,7 +100,7 @@ export function HTMLParser(html) {
 * @param {string} node templete字符串
 * @return {int} 0代表结束标签，1代表起始标签，3代表其他字符
 */
-function checkNode(node) {
+export function checkNode(node) {
     if (node.indexOf('</') === 0) {
         return 0
     } else if (node.indexOf('<') === 0) {
@@ -116,7 +116,7 @@ function checkNode(node) {
 * @return {string} name tag name
 * @return {string} props 属性字符串，这在将来在做处理
 */
-function TagParser(el) {
+export function TagParser(el) {
     // 第一个开始到第一个空格显然是 tagname
     var endIndex = el.indexOf(' ')
     // 如果不存在空格则说明全部都是字母或者需要的标签
@@ -149,7 +149,7 @@ function TagParser(el) {
 /**
 * 判断是否是闭合标签
 */
-function CloseTagParser(el) {
+export function CloseTagParser(el) {
     return el.substring(el.indexOf('/') + 1, el.lastIndexOf('>'))
 }
 
@@ -178,7 +178,7 @@ export function HTMLCompnonentParser(scope, stack, parent) {
     return root
 }
 
-function ElementParser(el, parent, stack, scope) {
+export function ElementParser(el, parent, stack, scope) {
     var { name, props } = TagParser(el)
     var ele = new Element(name, props, parent, scope)
     while (stack.length > 0) {

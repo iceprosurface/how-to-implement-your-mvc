@@ -1,5 +1,6 @@
-var assert = require('assert')
+const assert = require('assert')
 import {buildScope} from 'src/core/scope'
+
 describe('scope', () => {
     it('null of scope is {$data: {},methods: {},components: []}', () => {
         var nullScope = buildScope(null)
@@ -8,7 +9,7 @@ describe('scope', () => {
         assert.deepEqual([], nullScope.components)
     })
 
-    it('default components=[],methods={} when only input $data', () => {
+    it('default components=[],methods={} if only input $data', () => {
         var defaultScope = buildScope({$data: {}})
         assert.deepEqual([], defaultScope.components)
         assert.deepEqual({}, defaultScope.methods)
@@ -121,7 +122,7 @@ describe('scope', () => {
     Observer.on("deleteScope", element_4)
     describe('Observer should have on,off,emit', () => {
         describe('function on', () => {
-            it('when Observer.on("a",element_1),Observer.on("a", element_2),answer is [element_1, element_2]', () => {
+            it('if Observer.on("a",element_1),Observer.on("a", element_2),answer is [element_1, element_2]', () => {
                 assert.deepEqual([element_1, element_2], Observer._list.a)
             })
         })
@@ -130,7 +131,7 @@ describe('scope', () => {
                 Observer.emit("deepScope",  _ => _.update())
                 assert.strictEqual(true, el_flg_3)
             })
-            it('when Observer.emit("a"),el_flg_1 and el_flg_1 is true', () => {
+            it('el_flg_1 and el_flg_1 is true if when Observer.emit("a")', () => {
                 Observer.emit("a",  _ => _.update())
                 assert.strictEqual(true, el_flg_1)
                 assert.strictEqual(true, el_flg_2)
@@ -148,12 +149,12 @@ describe('scope', () => {
                 assert.deepEqual([element_4], Observer._list.deleteScope)
             })
 
-            it('when off unknow name/element, nothing happen', () => {
+            it('nothing happens if it off unknow name/element, ', () => {
                 var result = Observer.off("deleteScope", element_3)
                 assert.deepEqual([element_4], Observer._list.deleteScope)
             })
 
-            it('when Observer.off("deleteScope",element_4)Observer._list.a is []', () => {
+            it('Observer._list.a is [] if Observer.off("deleteScope",element_4)', () => {
                 Observer.off("deleteScope", element_4)
                 assert.deepEqual([], Observer._list.deleteScope)
             })
