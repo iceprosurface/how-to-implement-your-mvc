@@ -147,7 +147,9 @@ export function TagParser(el) {
 }
 
 /**
-* 判断是否是闭合标签
+* 转化为 closeTag 名字
+* @param {string} el templete字符串
+* @return {string} 结束标签
 */
 export function CloseTagParser(el) {
     return el.substring(el.indexOf('/') + 1, el.lastIndexOf('>'))

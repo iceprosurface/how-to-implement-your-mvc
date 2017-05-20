@@ -1,22 +1,34 @@
-import {check} from 'src/parser/HTMLparser.js'
+import {check, CloseTagParser} from 'src/parser/HTMLparser.js'
 const assert = require('assert')
 
 describe('HTMLparser', () => {
-    describe('check', () => {
-        it('check function can distinguish `</div>`', () => {
+    // base
+    describe('function check', () => {
+        it('can be able to distinguish `</div>`', () => {
             assert.deepEqual(check('</div>', 0), 0)
         })
-        it('check function can distinguish `<div>`', () => {
+        it('can be able to distinguish `<div>`', () => {
             assert.deepEqual(check('<div>', 0), 1)
         })
-        it('check function can distinguish `>`', () => {
+        it('can be able to distinguish `>`', () => {
             assert.deepEqual(check('>', 0), 2)
         })
-        it('check function can distinguish `nothing` ', () => {
+        it('can be able to distinguish `nothing` ', () => {
             assert.deepEqual(check('nothing', 0), 3)
         })
-        it('<', () => {
+        it('can be able to distinguish `<`', () => {
             assert.deepEqual(check('<', 0), 1)
         })
     })
+    describe('function CloseTagParser', () => {
+        it('can be able to parse `</div>`', () => {
+            assert.strictEqual(CloseTagParser('</div>'), 'div')
+        })
+        // it('can be able to warning if input `</div>>>`', () => {
+        //    assert.deepEqual(CloseTagParser('<'), 'div')
+        // })
+    })
+
+
+    // main feature
 })
